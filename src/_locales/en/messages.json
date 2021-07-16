@@ -369,6 +369,15 @@
   "fourHours": {
     "message": "4 hours"
   },
+  "eightHours": {
+    "message": "8 hours"
+  },
+  "twelveHours": {
+    "message": "12 hours"
+  },
+  "twentyFourHours": {
+    "message": "24 hours"
+  },
   "onLocked": {
     "message": "On System Lock"
   },
