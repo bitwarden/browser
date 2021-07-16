@@ -41,6 +41,7 @@ import { AddEditComponent } from './vault/add-edit.component';
 import { AttachmentsComponent } from './vault/attachments.component';
 import { CiphersComponent } from './vault/ciphers.component';
 import { CollectionsComponent } from './vault/collections.component';
+import { CreditCardNumberPipe } from './vault/credit-card-number.pipe';
 import { CurrentTabComponent } from './vault/current-tab.component';
 import { GroupingsComponent } from './vault/groupings.component';
 import { PasswordHistoryComponent } from './vault/password-history.component';
@@ -194,6 +195,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         CiphersComponent,
         CollectionsComponent,
         ColorPasswordPipe,
+        CreditCardNumberPipe,
         CurrentTabComponent,
         EnvironmentComponent,
         ExcludedDomainsComponent,

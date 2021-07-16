@@ -100,7 +100,7 @@
                     <div class="row-main">
                         <span class="row-label">{{'number' | i18n}}</span>
                         <span [hidden]="showCardNumber" class="monospaced">{{cipher.card.maskedNumber}}</span>
-                        <span [hidden]="!showCardNumber" class="monospaced">{{cipher.card.number}}</span>
+                        <span [hidden]="!showCardNumber" class="monospaced">{{cipher.card.number | creditCardNumber }}</span>
                     </div>
                     <div class="action-buttons">
                         <a class="row-btn" href="#" appStopClick appA11yTitle="{{'toggleVisibility' | i18n}}"
