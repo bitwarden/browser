@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const AngularCompilerPlugin = require('@ngtools/webpack').AngularCompilerPlugin;
+const WorkerPlugin = require('worker-plugin');
 
 if (process.env.NODE_ENV == null) {
     process.env.NODE_ENV = 'development';
@@ -13,7 +14,7 @@ const ENV = process.env.ENV = process.env.NODE_ENV;
 
 const moduleRules = [
     {
-        test: /\.ts$/,
+        test: /(?<!\.worker)\.ts$/,
         enforce: 'pre',
         loader: 'tslint-loader',
     },
@@ -113,6 +114,15 @@ const plugins = [
         tsConfigPath: 'tsconfig.json',
         entryModule: 'src/popup/app.module#AppModule',
         sourceMap: true,
+    }),
+    new WorkerPlugin({
+        plugins: [
+            new AngularCompilerPlugin({
+                tsConfigPath: 'jslib/common/tsconfig.worker.json',
+                sourceMap: true
+            })
+        ],
+        globalObject: 'self'
     }),
     new CleanWebpackPlugin({
         cleanAfterEveryBuildPatterns: ['!popup/fonts/**/*'],
