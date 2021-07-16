@@ -151,6 +151,8 @@ export class SettingsComponent implements OnInit {
     }
 
     async updatePin() {
+        let showPin: boolean = false;
+
         if (this.pin) {
             const div = document.createElement('div');
             const label = document.createElement('label');
@@ -162,11 +164,27 @@ export class SettingsComponent implements OnInit {
             label.appendChild(checkboxText);
 
             div.innerHTML =
-                `<div class="swal2-text">${this.i18nService.t('setYourPinCode')}</div>` +
-                '<input type="text" class="swal2-input" id="pin-val" autocomplete="off" ' +
-                'autocapitalize="none" autocorrect="none" spellcheck="false" inputmode="verbatim">';
+                `<div class="swal2-text">${this.i18nService.t('setYourPinCode')}</div>
+                <div class="swal2-password-input-group">
+                    <input type="password" class="swal2-input" id="pin-input" autocomplete="off"
+                        autocapitalize="none" autocorrect="none" spellcheck="false" inputmode="verbatim"
+                        placeholder="${this.i18nService.t('pin')}">
+                    <a id="toggle-btn" href="#" role="button" aria-label="${this.i18nService.t('toggleVisibility')}">
+                        <i id="toggle-icon" class="fa fa-lg fa-eye" aria-hidden="true"></i>
+                    </a>
+                </div>`;
 
-            (div.querySelector('#pin-val') as HTMLInputElement).placeholder = this.i18nService.t('pin');
+            const pinInput = div.querySelector('#pin-input') as HTMLInputElement;
+            const toggleIcon = div.querySelector('#toggle-icon') as HTMLInputElement;
+            (div.querySelector('#toggle-btn') as HTMLInputElement).addEventListener('click', event => {
+                event.preventDefault();
+                showPin = !showPin;
+                pinInput.setAttribute('type', showPin ? 'text' : 'password');
+                toggleIcon.classList.remove(showPin ? 'fa-eye' : 'fa-eye-slash');
+                toggleIcon.classList.add(showPin ? 'fa-eye-slash' : 'fa-eye');
+                pinInput.focus();
+            });
+
             div.appendChild(label);
 
             const submitted = await Swal.fire({
@@ -182,7 +200,7 @@ export class SettingsComponent implements OnInit {
             let pin: string = null;
             let masterPassOnRestart: boolean = null;
             if (submitted.value) {
-                pin = (document.getElementById('pin-val') as HTMLInputElement).value;
+                pin = (document.getElementById('pin-input') as HTMLInputElement).value;
                 masterPassOnRestart = (document.getElementById('master-pass-restart') as HTMLInputElement).checked;
             }
             if (pin != null && pin.trim() !== '') {

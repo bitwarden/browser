@@ -157,6 +157,26 @@ $fa-font-path: "~font-awesome/fonts";
                 }
             }
         }
+
+        .swal2-password-input-group {
+            display: flex;
+            align-items: center;
+
+            a[role=button] {
+                margin-top: 1em;
+                margin-left: 1em;
+                
+                @include themify($themes) {
+                    color: themed('boxRowButtonColor');
+                }
+
+                &:hover, &:focus {
+                    @include themify($themes) {
+                        color: themed('boxRowButtonHoverColor');
+                    }
+                }
+            }
+        }
     }
 
     i.swal-custom-icon {
