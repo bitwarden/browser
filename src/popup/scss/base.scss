@@ -43,7 +43,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: $font-family-sans-serif;
-    
+
     @include themify($themes) {
         color: themed('textColor');
     }
@@ -170,6 +170,7 @@ header {
         flex-direction: row;
         justify-content: center;
         align-items: center;
+        outline: none;
 
         @include themify($themes) {
             color: themed('headerColor');
