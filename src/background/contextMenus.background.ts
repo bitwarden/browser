@@ -29,7 +29,7 @@ export default class ContextMenusBackground {
         this.contextMenus.onClicked.addListener(async (info: any, tab: any) => {
             if (info.menuItemId === 'generate-password') {
                 await this.generatePasswordToClipboard();
-            } else if (info.parentMenuItemId === 'autofill' ||
+            } else if (info.menuItemId.startsWith('autofill_') ||
                 info.parentMenuItemId === 'copy-username' ||
                 info.parentMenuItemId === 'copy-password' ||
                 info.parentMenuItemId === 'copy-totp') {
@@ -64,7 +64,7 @@ export default class ContextMenusBackground {
             return;
         }
 
-        if (info.parentMenuItemId === 'autofill') {
+        if (info.menuItemId.startsWith("autofill_")) {
             await this.startAutofillPage(cipher);
         } else if (info.parentMenuItemId === 'copy-username') {
             this.platformUtilsService.copyToClipboard(cipher.login.username, { window: window });

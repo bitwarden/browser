@@ -325,8 +325,9 @@ export default class MainBackground {
         }
 
         const menuDisabled = await this.storageService.get<boolean>(ConstantsService.disableContextMenuItemKey);
+        const tab = await BrowserApi.getTabFromCurrentWindow();
         if (!menuDisabled) {
-            await this.buildContextMenu();
+            await this.buildContextMenu(tab);
         } else {
             await this.contextMenusRemoveAll();
         }
@@ -337,10 +338,6 @@ export default class MainBackground {
             return;
         }
 
-        const tab = await BrowserApi.getTabFromCurrentWindow();
-        if (tab) {
-            await this.contextMenuReady(tab, !menuDisabled);
-        }
     }
 
     async logout(expired: boolean) {
@@ -450,7 +447,7 @@ export default class MainBackground {
         }
     }
 
-    private async buildContextMenu() {
+    private async buildContextMenu(tab: any) {
         if (!chrome.contextMenus || this.buildingContextMenu) {
             return;
         }
@@ -465,12 +462,13 @@ export default class MainBackground {
             title: 'Bitwarden',
         });
 
+        await this.loadMenuAndUpdateBadge(tab.url, tab.id);
+        this.onUpdatedRan = this.onReplacedRan = false;
+
         await this.contextMenusCreate({
-            type: 'normal',
-            id: 'autofill',
-            parentId: 'root',
+            type: 'separator',
             contexts: ['all'],
-            title: this.i18nService.t('autoFill'),
+            parentId: 'root',
         });
 
         await this.contextMenusCreate({
@@ -501,6 +499,7 @@ export default class MainBackground {
 
         await this.contextMenusCreate({
             type: 'separator',
+            contexts: ['all'],
             parentId: 'root',
         });
 
@@ -515,12 +514,7 @@ export default class MainBackground {
         this.buildingContextMenu = false;
     }
 
-    private async contextMenuReady(tab: any, contextMenuEnabled: boolean) {
-        await this.loadMenuAndUpdateBadge(tab.url, tab.id, contextMenuEnabled);
-        this.onUpdatedRan = this.onReplacedRan = false;
-    }
-
-    private async loadMenuAndUpdateBadge(url: string, tabId: number, contextMenuEnabled: boolean) {
+    private async loadMenuAndUpdateBadge(url: string, tabId: number) {
         if (!url || (!chrome.browserAction && !this.sidebarAction)) {
             return;
         }
@@ -535,11 +529,9 @@ export default class MainBackground {
                 const ciphers = await this.cipherService.getAllDecryptedForUrl(url);
                 ciphers.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
 
-                if (contextMenuEnabled) {
-                    ciphers.forEach(cipher => {
-                        this.loadLoginContextMenuOptions(cipher);
-                    });
-                }
+                ciphers.forEach(cipher => {
+                    this.loadLoginContextMenuOptions(cipher);
+                });
 
                 const disableBadgeCounter = await this.storageService.get<boolean>(ConstantsService.disableBadgeCounterKey);
                 let theText = '';
@@ -552,7 +544,7 @@ export default class MainBackground {
                     }
                 }
 
-                if (contextMenuEnabled && ciphers.length === 0) {
+                if (ciphers.length === 0) {
                     await this.loadNoLoginsContextMenuOptions(this.i18nService.t('noMatchingLogins'));
                 }
 
@@ -563,7 +555,7 @@ export default class MainBackground {
             } catch { }
         }
 
-        await this.loadMenuAndUpdateBadgeForNoAccessState(contextMenuEnabled);
+        await this.loadMenuAndUpdateBadgeForNoAccessState(true);
     }
 
     private async loadMenuAndUpdateBadgeForNoAccessState(contextMenuEnabled: boolean) {
@@ -611,9 +603,9 @@ export default class MainBackground {
             await this.contextMenusCreate({
                 type: 'normal',
                 id: 'autofill_' + idSuffix,
-                parentId: 'autofill',
+                parentId: 'root',
                 contexts: ['all'],
-                title: this.sanitizeContextMenuTitle(title),
+                title: `${this.i18nService.t('autoFill')} ${this.sanitizeContextMenuTitle(title)}`,
             });
         }
 
