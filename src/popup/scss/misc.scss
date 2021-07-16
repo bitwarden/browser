@@ -356,3 +356,9 @@ select option {
         background-color: darken(themed('inputBackgroundColor'), +1);
     }
 }
+
+.password-reprompt .box-content {
+    text-align: left;
+    margin-left: -40px;
+    margin-right: -40px;
+}
