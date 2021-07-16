@@ -20,7 +20,7 @@ export class PopOutComponent implements OnInit {
 
     ngOnInit() {
         if (this.show) {
-            if (this.popupUtilsService.inSidebar(window) && this.platformUtilsService.isFirefox()) {
+            if (this.popupUtilsService.inPopout(window) || (this.popupUtilsService.inSidebar(window) && this.platformUtilsService.isFirefox())) {
                 this.show = false;
             }
         }
