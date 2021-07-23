@@ -130,6 +130,7 @@ const config = {
         'content/autofill': './src/content/autofill.js',
         'content/autofiller': './src/content/autofiller.ts',
         'content/notificationBar': './src/content/notificationBar.ts',
+        'content/contextMenuHandler': './src/content/contextMenuHandler.ts',
         'content/shortcuts': './src/content/shortcuts.ts',
         'content/message_handler': './src/content/message_handler.ts',
         'notification/bar': './src/notification/bar.js',

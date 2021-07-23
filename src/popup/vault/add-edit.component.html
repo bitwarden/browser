@@ -24,7 +24,7 @@
             <div class="box-content">
                 <div class="box-content-row" *ngIf="!editMode" appBoxRow>
                     <label for="type">{{'type' | i18n}}</label>
-                    <select id="type" name="Type" [(ngModel)]="cipher.type">
+                    <select id="type" name="Type" [(ngModel)]="cipher.type" (change)="cipherTypeChanged()">
                         <option *ngFor="let o of typeOptions" [ngValue]="o.value">{{o.name}}</option>
                     </select>
                 </div>
@@ -341,13 +341,22 @@
                         <div class="row-main">
                             <input id="fieldName{{i}}" type="text" name="Field.Name{{i}}" [(ngModel)]="f.name"
                                 class="row-label" placeholder="{{'name' | i18n}}" appInputVerbatim>
+                            <!--Custom Field: Text-->
                             <input id="fieldValue{{i}}" type="text" name="Field.Value{{i}}" [(ngModel)]="f.value"
                                 *ngIf="f.type === fieldType.Text" placeholder="{{'value' | i18n}}" appInputVerbatim>
+                            <!--Custom Field: Hidden-->
                             <input id="fieldValue{{i}}" type="{{f.showValue ? 'text' : 'password'}}"
                                 name="Field.Value{{i}}" [(ngModel)]="f.value" class="monospaced" appInputVerbatim
                                 *ngIf="f.type === fieldType.Hidden" placeholder="{{'value' | i18n}}"
                                 [disabled]="!cipher.viewPassword && !f.newField">
+                            <!--Custom Field: Linked-->
+                            <select id="fieldValue{{i}}" name="Field.Value{{i}}" [(ngModel)]="f.value"
+                                *ngIf="f.type === fieldType.Linked && cipher.type !== cipherType.SecureNote"
+                                [disabled]="!cipher.viewPassword && !f.newField">
+                                <option *ngFor="let o of linkedFieldOptions" [ngValue]="o.value">{{o.name}}</option>
+                            </select>
                         </div>
+                        <!--Custom Field: Boolean-->
                         <input id="fieldValue{{i}}" name="Field.Value{{i}}" type="checkbox" [(ngModel)]="f.value"
                             *ngIf="f.type === fieldType.Boolean" appTrueFalseValue trueValue="true" falseValue="false">
                         <div class="action-buttons"

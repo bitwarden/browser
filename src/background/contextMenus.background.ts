@@ -29,6 +29,8 @@ export default class ContextMenusBackground {
         this.contextMenus.onClicked.addListener(async (info: any, tab: any) => {
             if (info.menuItemId === 'generate-password') {
                 await this.generatePasswordToClipboard();
+            } else if (info.menuItemId === 'copy-identifier') {
+                await this.getClickedElement();
             } else if (info.parentMenuItemId === 'autofill' ||
                 info.parentMenuItemId === 'copy-username' ||
                 info.parentMenuItemId === 'copy-password' ||
@@ -38,11 +40,24 @@ export default class ContextMenusBackground {
         });
     }
 
+    copyClickedElement(msg: any) {
+        this.platformUtilsService.copyToClipboard(msg.identifier, { window: window });
+    }
+
     private async generatePasswordToClipboard() {
         const options = (await this.passwordGenerationService.getOptions())[0];
         const password = await this.passwordGenerationService.generatePassword(options);
         this.platformUtilsService.copyToClipboard(password, { window: window });
         this.passwordGenerationService.addHistory(password);
+    }
+
+    private async getClickedElement() {
+        const tab = await BrowserApi.getTabFromCurrentWindow();
+        if (tab == null) {
+            return;
+        }
+
+        BrowserApi.tabSendMessageData(tab, 'getClickedElement');
     }
 
     private async cipherAction(info: any) {

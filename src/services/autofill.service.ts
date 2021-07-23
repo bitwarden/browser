@@ -317,9 +317,15 @@ export default class AutofillService implements AutofillServiceInterface {
 
                 const matchingIndex = this.findMatchingFieldIndex(field, fieldNames);
                 if (matchingIndex > -1) {
-                    let val = fields[matchingIndex].value;
-                    if (val == null && fields[matchingIndex].type === FieldType.Boolean) {
-                        val = 'false';
+                    const matchingField = fields[matchingIndex];
+                    let val;
+                    if (matchingField.type === FieldType.Linked) {
+                        val = options.cipher.getLinkedFieldValue(matchingField.value);
+                    } else {
+                        val = matchingField.value;
+                        if (val == null && matchingField.type === FieldType.Boolean) {
+                            val = 'false';
+                        }
                     }
 
                     filledFields[field.opid] = field;

@@ -245,7 +245,8 @@ export default class MainBackground {
         this.runtimeBackground = new RuntimeBackground(this, this.autofillService, this.cipherService,
             this.platformUtilsService as BrowserPlatformUtilsService, this.storageService, this.i18nService,
             this.notificationsService, this.systemService, this.vaultTimeoutService,
-            this.environmentService, this.policyService, this.userService, this.messagingService);
+            this.environmentService, this.policyService, this.userService, this.messagingService,
+            () => this.contextMenusBackground);
         this.nativeMessagingBackground = new NativeMessagingBackground(this.storageService, this.cryptoService, this.cryptoFunctionService,
             this.vaultTimeoutService, this.runtimeBackground, this.i18nService, this.userService, this.messagingService, this.appIdService,
             this.platformUtilsService);
@@ -511,6 +512,14 @@ export default class MainBackground {
             parentId: 'root',
             contexts: ['all'],
             title: this.i18nService.t('generatePasswordCopied'),
+        });
+
+        await this.contextMenusCreate({
+            type: 'normal',
+            id: 'copy-identifier',
+            parentId: 'root',
+            contexts: ['all'],
+            title: this.i18nService.t('copyElementIdentifier'),
         });
 
         this.buildingContextMenu = false;

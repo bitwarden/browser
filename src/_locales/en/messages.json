@@ -88,6 +88,9 @@
   "generatePasswordCopied": {
     "message": "Generate Password (copied)"
   },
+  "copyElementIdentifier": {
+    "message": "Copy custom field name"
+  },
   "noMatchingLogins": {
     "message": "No matching logins."
   },
@@ -977,6 +980,9 @@
   "cfTypeBoolean": {
     "message": "Boolean"
   },
+  "cfTypeLinked": {
+    "message": "Linked"
+  },
   "popup2faCloseMessage": {
     "message": "Clicking outside the popup window to check your email for your verification code will cause this popup to close. Do you want to open this popup in a new window so that it does not close?"
   },
@@ -1079,6 +1085,9 @@
   "lastName": {
     "message": "Last Name"
   },
+  "fullName": {
+    "message": "Full Name"
+  },
   "identityName": {
     "message": "Identity Name"
   },
@@ -1123,6 +1132,9 @@
   },
   "country": {
     "message": "Country"
+  },
+  "fullAddress": {
+    "message": "Full address"
   },
   "type": {
     "message": "Type"
