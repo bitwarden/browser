@@ -3,9 +3,12 @@ import {
     EventEmitter,
     Input,
     Output,
+    ViewChild,
 } from '@angular/core';
 
 import { CipherView } from 'jslib-common/models/view/cipherView';
+
+import { ActionButtonsComponent } from './action-buttons.component';
 
 @Component({
     selector: 'app-cipher-row',
@@ -19,6 +22,8 @@ export class CipherRowComponent {
     @Input() showView = false;
     @Input() title: string;
 
+    @ViewChild(ActionButtonsComponent) actionButtons: ActionButtonsComponent;
+
     selectCipher(c: CipherView) {
         this.onSelected.emit(c);
     }
@@ -29,5 +34,9 @@ export class CipherRowComponent {
 
     viewCipher(c: CipherView) {
         this.onView.emit(c);
+    }
+
+    copyPassword(cipher: CipherView) {
+        this.actionButtons.copy(cipher, cipher.login.password, 'password', 'Password');
     }
 }

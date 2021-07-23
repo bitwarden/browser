@@ -1,5 +1,6 @@
 <a (click)="selectCipher(cipher)" (dblclick)="launchCipher(cipher)" href="#" appStopClick
-    title="{{title}} - {{cipher.name}}" class="box-content-row box-content-row-flex">
+    title="{{title}} - {{cipher.name}}" class="box-content-row box-content-row-flex" appCopyPaste
+    (copy)="copyPassword(cipher)">
     <div class="row-main">
         <app-vault-icon [cipher]="cipher"></app-vault-icon>
         <div class="row-main-content">
