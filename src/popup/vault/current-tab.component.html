@@ -1,4 +1,4 @@
-<header>
+<header appArrowNav (navDown)="arrowNav.down()" (navUp)="arrowNav.up()" (navReset)="arrowNav.reset()">
     <div class="left">
         <app-pop-out [show]="!inSidebar"></app-pop-out>
         <button type="button" appBlurClick (click)="refresh()" appA11yTitle="{{'refresh' | i18n}}" *ngIf="inSidebar">
@@ -7,7 +7,8 @@
     </div>
     <div class="search">
         <input type="{{searchTypeSearch ? 'search' : 'text'}}" placeholder="{{'searchVault' | i18n}}" id="search"
-            [(ngModel)]="searchText" (input)="searchVault()" autocomplete="off" (keydown)="closeOnEsc($event)">
+            [(ngModel)]="searchText" (input)="searchVault()" autocomplete="off" (keydown)="closeOnEsc($event)"
+            appFocus [focus]="arrowNav.navType === 'search'">
         <i class="fa fa-search" aria-hidden="true"></i>
     </div>
     <div class="right">
@@ -16,7 +17,7 @@
         </button>
     </div>
 </header>
-<content>
+<content appArrowNav (navDown)="arrowNav.down()" (navUp)="arrowNav.up()" (navReset)="arrowNav.reset()">
     <div class="no-items" *ngIf="!loaded">
         <i class="fa fa-spinner fa-spin fa-3x" aria-hidden="true"></i>
     </div>
@@ -29,7 +30,8 @@
             <div class="box-content">
                 <app-cipher-row *ngFor="let loginCipher of loginCiphers" [cipher]="loginCipher" 
                     title="{{'autoFill' | i18n}}" [showView]="true" (onSelected)="fillCipher($event)" 
-                    (onView)="viewCipher($event)">
+                    (onView)="viewCipher($event)" appFocus
+                    [focus]="arrowNav.navType === 'typeLogins' && loginCiphers[arrowNav.navIndex] === loginCipher">
                 </app-cipher-row>
                 <div class="box-content-row padded no-hover" *ngIf="!loginCiphers.length">
                     <p class="text-center">{{'autoFillInfo' | i18n}}</p>
@@ -46,7 +48,9 @@
             </div>
             <div class="box-content">
                 <app-cipher-row *ngFor="let cardCipher of cardCiphers" [cipher]="cardCipher" title="{{'autoFill' | i18n}}" [showView]="true"
-                    (onSelected)="fillCipher($event)" (onView)="viewCipher($event)"></app-cipher-row>
+                    (onSelected)="fillCipher($event)" (onView)="viewCipher($event)" appFocus
+                    [focus]="arrowNav.navType === 'cards' && cardCiphers[arrowNav.navIndex] === cardCipher">
+                </app-cipher-row>
             </div>
         </div>
         <div class="box list" *ngIf="identityCiphers && identityCiphers.length">
@@ -56,7 +60,9 @@
             </div>
             <div class="box-content">
                 <app-cipher-row *ngFor="let identityCipher of identityCiphers" [cipher]="identityCipher" title="{{'autoFill' | i18n}}" [showView]="true"
-                    (onSelected)="fillCipher($event)" (onView)="viewCipher($event)"></app-cipher-row>
+                    (onSelected)="fillCipher($event)" (onView)="viewCipher($event)" appFocus
+                    [focus]="arrowNav.navType === 'identities' && identityCiphers[arrowNav.navIndex] === identityCipher">
+                </app-cipher-row>
             </div>
         </div>
     </ng-container>

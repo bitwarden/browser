@@ -33,6 +33,7 @@ import { BroadcasterService } from 'jslib-angular/services/broadcaster.service';
 
 import { GroupingsComponent as BaseGroupingsComponent } from 'jslib-angular/components/groupings.component';
 
+import { ArrowNavService } from '../services/arrow-nav.service';
 import { PopupUtilsService } from '../services/popup-utils.service';
 
 const ComponentId = 'GroupingsComponent';
@@ -65,6 +66,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     searchPending = false;
     searchTypeSearch = false;
     deletedCount = 0;
+    arrowNav = new ArrowNavService();
 
     private loadedTimeout: number;
     private selectedTimeout: number;
@@ -156,7 +158,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
             this.nestedFolders = this.nestedFolders.slice(0, this.nestedFolders.length - 1);
         }
 
-        super.loaded = true;
+        this.initArrowNav();
     }
 
     async loadCiphers() {
@@ -229,6 +231,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         if (timeout == null) {
             this.hasSearched = this.searchService.isSearchable(this.searchText);
             this.ciphers = await this.searchService.searchCiphers(this.searchText, filterDeleted, this.allCiphers);
+            this.initArrowNav();
             return;
         }
         this.searchPending = true;
@@ -240,6 +243,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
                 this.ciphers = await this.searchService.searchCiphers(this.searchText, filterDeleted, this.allCiphers);
             }
             this.searchPending = false;
+            this.initArrowNav();
         }, timeout);
     }
 
@@ -359,5 +363,24 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         }
 
         return true;
+    }
+
+    private initArrowNav() {
+        if (this.showSearching()) {
+            this.arrowNav.init([
+                { name: 'searchCiphers', length: this.ciphers?.length ?? 0 },
+                { name: 'search', length: 1 },
+            ]);
+        } else {
+            this.arrowNav.init([
+                { name: 'favorites', length: this.favoriteCiphers?.length ?? 0 },
+                { name: 'types', length: 4 },
+                { name: 'folders', length: this.nestedFolders?.length ?? 0 },
+                { name: 'collections', length: this.nestedCollections?.length ?? 0 },
+                { name: 'noFolder', length: this.noFolderCiphers?.length ?? 0 },
+                { name: 'trash', length: 1 },
+                { name: 'search', length: 1 },
+            ]);
+        }
     }
 }

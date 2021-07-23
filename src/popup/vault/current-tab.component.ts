@@ -31,6 +31,7 @@ import { ConstantsService } from 'jslib-common/services/constants.service';
 
 import { AutofillService } from '../../services/abstractions/autofill.service';
 
+import { ArrowNavService } from '../services/arrow-nav.service';
 import { PopupUtilsService } from '../services/popup-utils.service';
 
 import { Utils } from 'jslib-common/misc/utils';
@@ -52,6 +53,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     inSidebar = false;
     searchTypeSearch = false;
     loaded = false;
+    arrowNav = new ArrowNavService();
 
     private totpCode: string;
     private totpTimeout: number;
@@ -236,6 +238,13 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
                     break;
             }
         });
+
+        this.arrowNav.init([
+            { name: 'typeLogins', length: this.loginCiphers?.length ?? 0 },
+            { name: 'cards', length: this.cardCiphers?.length ?? 0 },
+            { name: 'identities', length: this.identityCiphers?.length ?? 0 },
+            { name: 'search', length: 1 },
+        ]);
 
         this.loginCiphers = this.loginCiphers.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
         this.loaded = true;

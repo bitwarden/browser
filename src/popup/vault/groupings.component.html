@@ -1,10 +1,11 @@
-<header>
+<header appArrowNav (navDown)="arrowNav.down()" (navUp)="arrowNav.up()" (navReset)="arrowNav.reset()">
     <div class="left">
         <app-pop-out></app-pop-out>
     </div>
     <div class="search">
         <input type="{{searchTypeSearch ? 'search' : 'text'}}" placeholder="{{'searchVault' | i18n}}" id="search"
-            [(ngModel)]="searchText" (input)="search(200)" autocomplete="off" appAutofocus (keydown)="closeOnEsc($event)">
+            [(ngModel)]="searchText" (input)="search(200)" autocomplete="off" appAutofocus (keydown)="closeOnEsc($event)"
+            appFocus [focus]="arrowNav.navType === 'search'">
         <i class="fa fa-search"></i>
     </div>
     <div class="right">
@@ -13,7 +14,7 @@
         </button>
     </div>
 </header>
-<content>
+<content appArrowNav (navDown)="arrowNav.down()" (navUp)="arrowNav.up()" (navReset)="arrowNav.reset()">
     <div class="no-items" *ngIf="(!ciphers || !ciphers.length) && !showSearching()">
         <i class="fa fa-spinner fa-spin fa-3x" *ngIf="!loaded"></i>
         <ng-container *ngIf="loaded">
@@ -31,7 +32,9 @@
             <div class="box-content">
                 <app-cipher-row *ngFor="let favoriteCipher of favoriteCiphers" [cipher]="favoriteCipher"
                     title="{{'viewItem' | i18n}}" (onSelected)="selectCipher($event)"
-                    (launchEvent)="launchCipher($event)"></app-cipher-row>
+                    (launchEvent)="launchCipher($event)" appFocus
+                    [focus]="arrowNav.navType === 'favorites' && favoriteCiphers[arrowNav.navIndex] === favoriteCipher">
+                </app-cipher-row>
             </div>
         </div>
         <div class="box list">
@@ -40,7 +43,8 @@
                 <span class="flex-right">4</span>
             </div>
             <div class="box-content single-line">
-                <a href="#" class="box-content-row" appStopClick appBlurClick (click)="selectType(cipherType.Login)">
+                <a href="#" class="box-content-row" appStopClick appBlurClick (click)="selectType(cipherType.Login)"
+                    appFocus [focus]="arrowNav.navType === 'types' && arrowNav.navIndex === 0">
                     <div class="row-main">
                         <div class="icon"><i class="fa fa-fw fa-lg fa-globe"></i></div>
                         <span class="text">{{'typeLogin' | i18n}}</span>
@@ -48,7 +52,8 @@
                     <span class="row-sub-label">{{typeCounts.get(cipherType.Login) || 0}}</span>
                     <span><i class="fa fa-chevron-right fa-lg row-sub-icon"></i></span>
                 </a>
-                <a href="#" class="box-content-row" appStopClick appBlurClick (click)="selectType(cipherType.Card)">
+                <a href="#" class="box-content-row" appStopClick appBlurClick (click)="selectType(cipherType.Card)"
+                    appFocus [focus]="arrowNav.navType === 'types' && arrowNav.navIndex === 1">
                     <div class="row-main">
                         <div class="icon"><i class="fa fa-fw fa-lg fa-credit-card"></i></div>
                         <span class="text">{{'typeCard' | i18n}}</span>
@@ -56,7 +61,8 @@
                     <span class="row-sub-label">{{typeCounts.get(cipherType.Card) || 0}}</span>
                     <span><i class="fa fa-chevron-right fa-lg row-sub-icon"></i></span>
                 </a>
-                <a href="#" class="box-content-row" appStopClick appBlurClick (click)="selectType(cipherType.Identity)">
+                <a href="#" class="box-content-row" appStopClick appBlurClick (click)="selectType(cipherType.Identity)"
+                    appFocus [focus]="arrowNav.navType === 'types' && arrowNav.navIndex === 2">
                     <div class="row-main">
                         <div class="icon"><i class="fa fa-fw fa-lg fa-id-card-o"></i></div>
                         <span class="text">{{'typeIdentity' | i18n}}</span>
@@ -65,7 +71,8 @@
                     <span><i class="fa fa-chevron-right fa-lg row-sub-icon"></i></span>
                 </a>
                 <a href="#" class="box-content-row" appStopClick appBlurClick
-                    (click)="selectType(cipherType.SecureNote)">
+                    (click)="selectType(cipherType.SecureNote)" appFocus
+                    [focus]="arrowNav.navType === 'types' && arrowNav.navIndex === 3">
                     <div class="row-main">
                         <div class="icon"><i class="fa fa-fw fa-lg fa-sticky-note-o"></i></div>
                         <span class="text">{{'typeSecureNote' | i18n}}</span>
@@ -82,7 +89,8 @@
             </div>
             <div class="box-content single-line">
                 <a *ngFor="let f of nestedFolders" href="#" class="box-content-row" appStopClick appBlurClick
-                    (click)="selectFolder(f.node)">
+                    (click)="selectFolder(f.node)" appFocus
+                    [focus]="arrowNav.navType === 'folders' && nestedFolders[arrowNav.navIndex] === f">
                     <div class="row-main">
                         <div class="icon">
                             <i class="fa fa-fw fa-lg"
@@ -102,7 +110,8 @@
             </div>
             <div class="box-content single-line">
                 <a *ngFor="let nestedCollection of nestedCollections" href="#" class="box-content-row"
-                    appStopClick appBlurClick (click)="selectCollection(nestedCollection.node)">
+                    appStopClick appBlurClick (click)="selectCollection(nestedCollection.node)" appFocus
+                    [focus]="arrowNav.navType === 'collections' && nestedCollections[arrowNav.navIndex] === nestedCollection">
                     <div class="row-main">
                         <div class="icon"><i class="fa fa-fw fa-lg fa-cube"></i></div>
                         <span class="text">{{nestedCollection.node.name}}</span>
@@ -120,7 +129,9 @@
             <div class="box-content">
                 <app-cipher-row *ngFor="let noFolderCipher of noFolderCiphers" [cipher]="noFolderCipher"
                     title="{{'viewItem' | i18n}}" (onSelected)="selectCipher($event)"
-                    (launchEvent)="launchCipher($event)"></app-cipher-row>
+                    (launchEvent)="launchCipher($event)" appFocus
+                    [focus]="arrowNav.navType === 'noFolder' && noFolderCiphers[arrowNav.navIndex] === noFolderCipher">
+                </app-cipher-row>
             </div>
         </div>
         <div class="box list" *ngIf="deletedCount">
@@ -130,7 +141,7 @@
             </div>
             <div class="box-content single-line">
                 <a href="#" class="box-content-row" appStopClick appBlurClick
-                    (click)="selectTrash()">
+                    (click)="selectTrash()" appFocus [focus]="arrowNav.navType === 'trash'">
                     <div class="row-main">
                         <div class="icon"><i class="fa fa-fw fa-lg fa-trash-o"></i></div>
                         <span class="text">{{'trash' | i18n}}</span>
@@ -150,7 +161,9 @@
                 <div class="box-content">
                     <app-cipher-row *cdkVirtualFor="let searchedCipher of ciphers" [cipher]="searchedCipher"
                         title="{{'viewItem' | i18n}}" (onSelected)="selectCipher($event)"
-                        (launchEvent)="launchCipher($event)"></app-cipher-row>
+                        (launchEvent)="launchCipher($event)" appFocus
+                        [focus]="arrowNav.navType === 'searchCiphers' && ciphers[arrowNav.navIndex] === searchedCipher">
+                    </app-cipher-row>
                 </div>
             </div>
         </cdk-virtual-scroll-viewport>

@@ -33,6 +33,7 @@ import { BroadcasterService } from 'jslib-angular/services/broadcaster.service';
 
 import { CiphersComponent as BaseCiphersComponent } from 'jslib-angular/components/ciphers.component';
 
+import { ArrowNavService } from '../services/arrow-nav.service';
 import { PopupUtilsService } from '../services/popup-utils.service';
 
 const ComponentId = 'CiphersComponent';
@@ -50,6 +51,7 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
     nestedFolders: TreeNode<FolderView>[];
     nestedCollections: TreeNode<CollectionView>[];
     searchTypeSearch = false;
+    arrowNav = new ArrowNavService();
 
     private selectedTimeout: number;
     private preventSelected = false;
@@ -130,6 +132,13 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
                 this.groupingTitle = this.i18nService.t('allItems');
                 await this.load();
             }
+
+            this.arrowNav.init([
+                { name: 'folders', length: this.nestedFolders?.length ?? 0 },
+                { name: 'collections', length: this.nestedCollections?.length ?? 0 },
+                { name: 'ciphers', length: this.ciphers?.length ?? 0 },
+                { name: 'search', length: 1 },
+            ]);
 
             if (this.applySavedState && this.state != null) {
                 window.setTimeout(() => this.popupUtils.setContentScrollY(window, this.state.scrollY,

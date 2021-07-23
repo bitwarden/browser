@@ -1,4 +1,4 @@
-<header>
+<header appArrowNav (navDown)="arrowNav.down()" (navUp)="arrowNav.up()" (navReset)="arrowNav.reset()">
     <div class="left">
         <button type="button" appBlurClick (click)="back()">
             <span class="header-icon"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
@@ -8,7 +8,7 @@
     <div class="search">
         <input type="{{searchTypeSearch ? 'search' : 'text'}}"
             placeholder="{{searchPlaceholder || ('searchVault' | i18n)}}" id="search" [(ngModel)]="searchText"
-            (input)="search(200)" autocomplete="off" appAutofocus>
+            (input)="search(200)" autocomplete="off" appAutofocus appFocus [focus]="arrowNav.navType === 'search'">
         <i class="fa fa-search" aria-hidden="true"></i>
     </div>
     <div class="right">
@@ -17,7 +17,8 @@
         </button>
     </div>
 </header>
-<content [ngClass]="{'stacked-boxes': showGroupings()}">
+<content [ngClass]="{'stacked-boxes': showGroupings()}"
+    appArrowNav (navDown)="arrowNav.down()" (navUp)="arrowNav.up()" (navReset)="arrowNav.reset()">
     <ng-container *ngIf="showGroupings()">
         <div class="box list" *ngIf="nestedFolders && nestedFolders.length">
             <div class="box-header">
@@ -25,7 +26,8 @@
             </div>
             <div class="box-content single-line">
                 <a *ngFor="let f of nestedFolders" href="#" class="box-content-row" appStopClick appBlurClick
-                    (click)="selectFolder(f.node)">
+                    (click)="selectFolder(f.node)" appFocus
+                    [focus]="arrowNav.navType === 'folders' && nestedFolders[arrowNav.navIndex] === f">
                     <div class="row-main">
                         <div class="icon">
                             <i class="fa fa-fw fa-lg" aria-hidden="true"
@@ -43,7 +45,8 @@
             </div>
             <div class="box-content single-line">
                 <a *ngFor="let c of nestedCollections" href="#" class="box-content-row" appStopClick appBlurClick
-                    (click)="selectCollection(c.node)">
+                    (click)="selectCollection(c.node)" appFocus
+                    [focus]="arrowNav.navType === 'collections' && nestedCollections[arrowNav.navIndex] === c">
                     <div class="row-main">
                         <div class="icon"><i class="fa fa-fw fa-lg fa-cube" aria-hidden="true"></i></div>
                         <span class="text">{{c.node.name}}</span>
@@ -71,7 +74,9 @@
                 </div>
                 <div class="box-content">
                     <app-cipher-row *cdkVirtualFor="let c of ciphers" [cipher]="c" title="{{'viewItem' | i18n}}"
-                        (onSelected)="selectCipher($event)" (launchEvent)="launchCipher($event)"></app-cipher-row>
+                        (onSelected)="selectCipher($event)" (launchEvent)="launchCipher($event)" appFocus
+                        [focus]="arrowNav.navType === 'ciphers' && ciphers[arrowNav.navIndex] === c">
+                    </app-cipher-row>
                 </div>
             </div>
         </cdk-virtual-scroll-viewport>

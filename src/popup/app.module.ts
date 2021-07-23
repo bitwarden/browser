@@ -52,6 +52,9 @@ import { SendAddEditComponent } from './send/send-add-edit.component';
 import { SendGroupingsComponent } from './send/send-groupings.component';
 import { SendTypeComponent } from './send/send-type.component';
 
+import { ArrowNavDirective } from '../directives/arrow-nav.directive';
+import { FocusDirective } from '../directives/focus.directive';
+
 import { A11yTitleDirective } from 'jslib-angular/directives/a11y-title.directive';
 import { ApiActionDirective } from 'jslib-angular/directives/api-action.directive';
 import { AutofocusDirective } from 'jslib-angular/directives/autofocus.directive';
@@ -185,6 +188,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         AddEditComponent,
         ApiActionDirective,
         AppComponent,
+        ArrowNavDirective,
         AttachmentsComponent,
         AutofocusDirective,
         BlurClickDirective,
@@ -199,6 +203,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         ExcludedDomainsComponent,
         ExportComponent,
         FallbackSrcDirective,
+        FocusDirective,
         FolderAddEditComponent,
         FoldersComponent,
         GroupingsComponent,
