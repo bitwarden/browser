@@ -6,6 +6,7 @@ import { LoginView } from 'jslib-common/models/view/loginView';
 
 import { CipherService } from 'jslib-common/abstractions/cipher.service';
 import { EnvironmentService } from 'jslib-common/abstractions/environment.service';
+import { FolderService } from 'jslib-common/abstractions/folder.service';
 import { I18nService } from 'jslib-common/abstractions/i18n.service';
 import { MessagingService } from 'jslib-common/abstractions/messaging.service';
 import { NotificationsService } from 'jslib-common/abstractions/notifications.service';
@@ -21,7 +22,7 @@ import BrowserPlatformUtilsService from '../services/browserPlatformUtils.servic
 import { BrowserApi } from '../browser/browserApi';
 
 import MainBackground from './main.background';
-
+ 
 import { Utils } from 'jslib-common/misc/utils';
 
 import { OrganizationUserStatusType } from 'jslib-common/enums/organizationUserStatusType';
@@ -39,7 +40,8 @@ export default class RuntimeBackground {
         private notificationsService: NotificationsService,
         private systemService: SystemService, private vaultTimeoutService: VaultTimeoutService,
         private environmentService: EnvironmentService, private policyService: PolicyService,
-        private userService: UserService, private messagingService: MessagingService) {
+        private userService: UserService, private messagingService: MessagingService,
+        private folderService: FolderService) {
 
         // onInstalled listener must be wired up before anything else, so we do it in the ctor
         chrome.runtime.onInstalled.addListener((details: any) => {
@@ -107,7 +109,7 @@ export default class RuntimeBackground {
                 this.removeTabFromNotificationQueue(sender.tab);
                 break;
             case 'bgAddSave':
-                await this.saveAddLogin(sender.tab);
+                await this.saveAddLogin(sender.tab, msg.folder);
                 break;
             case 'bgChangeSave':
                 await this.saveChangePassword(sender.tab);
@@ -216,7 +218,7 @@ export default class RuntimeBackground {
         this.pageDetailsToAutoFill = [];
     }
 
-    private async saveAddLogin(tab: any) {
+    private async saveAddLogin(tab: any, folderId: string) {
         if (await this.vaultTimeoutService.isLocked()) {
             return;
         }
@@ -246,6 +248,12 @@ export default class RuntimeBackground {
             model.name = model.name.replace(/^www\./, '');
             model.type = CipherType.Login;
             model.login = loginModel;
+
+            const folders = await this.folderService.getAllDecrypted();
+            const folderExist = folders.some((x) => x.id === folderId);
+            if (folderExist && !Utils.isNullOrWhitespace(folderId)) {
+                model.folderId = folderId;
+            }
 
             const cipher = await this.cipherService.encrypt(model);
             await this.cipherService.saveWithServer(cipher);
@@ -450,6 +458,8 @@ export default class RuntimeBackground {
                 notificationChangeSave: this.i18nService.t('notificationChangeSave'),
                 notificationChangeDesc: this.i18nService.t('notificationChangeDesc'),
             };
+        } else if (responseCommand === 'notificationBarGetFoldersList') {
+            responseData.folders = await this.folderService.getAllDecrypted();
         }
 
         await BrowserApi.tabSendMessageData(tab, responseCommand, responseData);

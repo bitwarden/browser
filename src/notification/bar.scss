@@ -96,3 +96,9 @@ body[class*='lang-en'] .add-buttons {
         display: none;
     }
 }
+
+@media (max-width: 768px) {
+    #select-folder{
+        display: none !important; 
+    }       
+}
